@@ -1,0 +1,7 @@
+Flask==2.0.3
+paramiko
+crossplane
+pyyaml
+requests
+flask_sqlalchemy
+psycopg2

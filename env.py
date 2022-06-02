@@ -1,0 +1,5 @@
+WORKSPACE_DIR = "/workspace/"
+TMP_DIR = "/workspace/tmp/"
+CONFIG_DIR = "/workspace/.kube"
+USER_KUBE_CONFIG_DIR = "/workspace/kubeConfig"
+TEMPLATE_DIR = "/app/k8s_templates/"
