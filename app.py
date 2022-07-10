@@ -7,15 +7,16 @@ from sqlalchemy import create_engine, Column, Integer, String
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.dialects.postgresql import JSONB
-import dbConfig
+import env
 
 app = Flask(__name__)
 
 #######
-POSTGRES_URL = dbConfig.CONFIG['postgresUrl']
-POSTGRES_USER = dbConfig.CONFIG['postgresUser']
-POSTGRES_PASS = dbConfig.CONFIG['postgresPass']
-POSTGRES_DB = dbConfig.CONFIG['postgresDb']
+#POSTGRES_URL = dbConfig.CONFIG['postgresUrl']
+POSTGRES_URL = env.DB_CONFIG['postgresUrl']
+POSTGRES_USER = env.DB_CONFIG['postgresUser']
+POSTGRES_PASS = env.DB_CONFIG['postgresPass']
+POSTGRES_DB = env.DB_CONFIG['postgresDb']
 DB_URL = 'postgresql://{user}:{pw}@{url}/{db}'.format(user=POSTGRES_USER, pw=POSTGRES_PASS, url=POSTGRES_URL, db=POSTGRES_DB)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = DB_URL
