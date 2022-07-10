@@ -68,7 +68,7 @@ def kube():
 
            new_generate = generate.KubeConfigGen(username,clustername,groupname)
            if new_generate.path_control():
-               if new_generate.generate_csr_yaml():
+               if new_generate.generate_csr():
                   new_generate.generate_kubeconfig()
 
                   infoo = {"clusters":[{"name":"devops-k8s-lab","groups":{"developer":"True"},"dates":{"developer":{"startDate":"21.12.2022"}}}]}

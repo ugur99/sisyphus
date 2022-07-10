@@ -3,8 +3,8 @@
 # DATABASE_URI = 'postgresql://sisyphus:L59aPWqAX3@my-release-postgresql.ugur.svc.cluster.local:5432/flask_db'
 
 CONFIG = {
-   'postgresUrl':'my-release-postgresql.ugur.svc.cluster.local:5432',
+   'postgresUrl':'postgresql.sisyphus.svc.cluster.local:5432',
    'postgresUser':'sisyphus',
    'postgresPass':'L59aPWqAX3',
-   'postgresDb': 'flask_db'
+   'postgresDb': 'sisyphus'
 }
