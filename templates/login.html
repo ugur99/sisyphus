@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html>
   <head>
@@ -10,23 +12,20 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
       <div class="navbar-fluid">
           <a class="btn btn-secondary btn-lg" href="/" role="button">Home</a>
-          <a class="btn btn-success btn-lg" href="login" role="button">Sign In</a>
       </div>
     </nav>
 
-
-    <div class="container">
-        <form class="form-group">
-            <label for="userem">Email:</label>
-            <input type="email" class="form-control" name="userem" placeholder="Email">
+    <div class="container-fluid">
+      <div class="jumbotron">   
+        <h1 class="display-4">LOGIN PAGE</h1>     
+        <form class="form-group" action="#" method="post">
+            <label for="username">Username:</label>
+            <input type="text" class="form-control" name="username" placeholder="Username">
             <label for="userpass">Password:</label>
             <input type="password" class="form-control" name="userpass" placeholder="Password">
-            <div class="checkbox">
-                <label for="usercheck">
-                    <input type="checkbox" name="usercheck" value="">Keep Me Logged In</label>
-            </div>
-            <button type="submit" class="btn btn-secondary" name="button">Submit</button>
+            <button type="submit" class="btn btn-secondary" name="button">Login</button>
         </form>
+      </div>
     </div>
 
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>

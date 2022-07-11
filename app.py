@@ -1,18 +1,22 @@
+import re, generate, subprocess, os, env, logging
+from select import select
+from typing import Sequence
 from flask import Flask, redirect, url_for, render_template, request, send_from_directory
-import re, generate
-import subprocess,os
-
+from flask_login import UserMixin
+from flask_wtf import FlaskForm
+from wtforms import StringField, PasswordField, SubmitField
+from wtforms.validators import InputRequired, Length, ValidationError
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import create_engine, Column, Integer, String
+from sqlalchemy import create_engine, Column, Integer, String, extract, table, func, text, Sequence
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.dialects.postgresql import JSONB
-import env
+
 
 app = Flask(__name__)
 
-#######
-#POSTGRES_URL = dbConfig.CONFIG['postgresUrl']
+app.logger.setLevel(logging.DEBUG)
+
 POSTGRES_URL = env.DB_CONFIG['postgresUrl']
 POSTGRES_USER = env.DB_CONFIG['postgresUser']
 POSTGRES_PASS = env.DB_CONFIG['postgresPass']
@@ -25,34 +29,41 @@ db = SQLAlchemy(app)
 class Monitor(db.Model):
     __tablename__ = 'users'
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True )
     user = db.Column(db.String(120), unique=True, nullable=False)
     info = db.Column(JSONB)
 
-    def __init__(self, id, user, info):
-        self.id = id
+    def __init__(self, user, info):
         self.user = user
         self.info = info
 
     def __repr__(self):
         return f"<User {self.user}>"
 
-db.create_all()
+class User(db.Model):
+     __tablename__ = 'systemusers'
+     id = db.Column(db.Integer, primary_key=True)
+     username = db.Column(db.String(20), unique=True, nullable=False)
+     email = db.Column(db.String(40), unique=True, nullable=False)
+     password = db.Column(db.String(80), nullable=False)
 
-#######
+     def __init__(self, username, email, password):
+        self.username = username
+        self.email = email
+        self.password = password
+
+     def __repr__(self):
+        return f"<User {self.username}>"
+
+db.create_all()
 
 @app.route("/")
 def home():
      return render_template("home.html")
 
-@app.route("/about")
-def info():
-     return render_template("about.html")
-
 @app.route("/docs")
 def docs():
      return render_template("docs.html")
-
 
 @app.route("/generate-kubeconfig", methods=["POST", "GET"])
 def kube():
@@ -63,9 +74,7 @@ def kube():
            groupname = request.form["groupname"]
            clustername = request.form["clustername"]
            kubeconfigname = username + "-" + clustername + "-kubeconfig"
-           print("User Name      : " + username)
-           print("Group Name     : " + groupname)
-           print("KubeConfig Name: " + kubeconfigname)
+           app.logger.debug('User Name is %s ,Group Name is %s ,Cluster Name is %s ,KubeConfig Name is %s ', username, groupname, clustername, kubeconfigname)
 
            new_generate = generate.KubeConfigGen(username,clustername,groupname)
            if new_generate.path_control():
@@ -73,7 +82,9 @@ def kube():
                   new_generate.generate_kubeconfig()
 
                   infoo = {"clusters":[{"name":"devops-k8s-lab","groups":{"developer":"True"},"dates":{"developer":{"startDate":"21.12.2022"}}}]}
-                  user = Monitor(1,username,infoo)
+
+                  user = Monitor(username,infoo)
+                  
                   db.session.add(user)
                   db.session.commit()
 
@@ -82,25 +93,35 @@ def kube():
      else:
        return render_template("generate-kubeconfig.html")
 
-@app.route("/rbac-template", methods=["POST", "GET"])
-def rbac():
-     return render_template("rbac-template.html")
-
-@app.route("/role-ops", methods=["POST", "GET"])
-def role():
-     return render_template("role-ops.html")
-
-@app.route("/test")
-def test():
-     return render_template("new.html")
-
 @app.route("/login", methods=["POST", "GET"])
 def login():
      if request.method == "POST":
-       user = request.form["username"]
-       return redirect(url_for("user", usr=user))
-     else:
-       return render_template("login.html")
+       username = request.form["username"]
+       userpass = request.form["userpass"]
+       app.logger.debug('Username is %s , Password is ******** ', username )
+
+       systemuser = User(username, userpass)
+        
+       # Following Lines SHOULD BE USED FOR CREATING USER IN DATABASE
+       #db.session.add(systemuser)
+       #db.session.commit()
+
+     return render_template("login.html")
+
+@app.route("/new-user", methods=["POST", "GET"])
+def create_user():
+     if request.method == "POST":
+       username = request.form["username"]
+       userpass = request.form["userpass"]
+       useremail = request.form["useremail"]
+       app.logger.debug('Username is %s ,User Email is %s, Password is ******** ', username , useremail )
+
+       systemuser = User(username, useremail, userpass)
+        
+       db.session.add(systemuser)
+       db.session.commit()
+
+     return render_template("createuser.html")
 
 if __name__ == "__main__":
     app.run(debug=True)

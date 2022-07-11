@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Generate Kubeconfig Page{% endblock %}
+
+{% block content %}
+      
+    <div class="container-fluid">
+        <div class="jumbotron">
+            <h1 class="display-4">CREATE USER</h1>
+            <form class="form-group" action="#" method="post">
+              <label for="username">Username:</label>
+              <input type="text" class="form-control" name="username" placeholder="Username">
+              <label for="useremail">Email:</label>
+              <input type="email" class="form-control" name="useremail" placeholder="Email">
+              <label for="userpass">Password:</label>
+              <input type="password" class="form-control" name="userpass" placeholder="Password">
+              <button type="submit" class="btn btn-secondary" name="button">Login</button>
+            </form>
+        </div>
+    </div>
+
+{% endblock %}
