@@ -7,19 +7,33 @@
 
       <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
-          <a class="btn btn-secondary btn-lg" href="/" role="button">Home</a>
+          <a class="btn btn-info btn-lg" href="/" role="button">Home</a>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <a class="btn btn-success btn-lg" href="docs" role="button">Docs</a>
-            <a class="btn btn-success btn-lg" href="new-user" role="button">Create User</a>
-            <div class="btn-group" role="group">
-                <button id="btnGroupDrop1" type="button" class="btn btn-success btn-lg dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Operational Tasks</button>
-                <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="btnGroupDrop1">
-                    <a class="btn btn-outline-secondary" href="generate-kubeconfig" role="button">Generate KubeConfig</a>
-                </ul>
+            <a class="btn btn-dark btn-lg" href="docs" role="button">Docs</a>
+
+            <div class="dropdown">
+              <button class="btn btn-dark btn-lg dropdown-toggle" type="button" id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-expanded="false">
+                Inventories
+              </button>
+              <ul class="dropdown-menu dropdown-menu-success" aria-labelledby="dropdownMenuButton2">
+                <li><a class="dropdown-item btn btn-dark " href="user-list">Cluster User List</a></li>
+                <li><a class="dropdown-item btn btn-dark " href="platform-user-list">Platform User List</a></li>
+              </ul>
             </div>
+
+            <div class="dropdown">
+              <button class="btn btn-dark btn-lg dropdown-toggle" type="button" id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-expanded="false">
+                Operational Tasks
+              </button>
+              <ul class="dropdown-menu dropdown-menu-success" aria-labelledby="dropdownMenuButton2">
+                <li><a class="dropdown-item btn btn-dark " href="generate-kubeconfig">Generate KubeConfig</a></li>
+                <li><a class="dropdown-item btn btn-dark " href="new-user">Create Platform User</a></li>
+              </ul>
+            </div>
+
             <a class="btn btn-danger btn-lg" href="{{ url_for('logout') }}" role="button">Logout</a>
           </div>
         </div>

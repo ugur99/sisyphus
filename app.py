@@ -13,7 +13,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.dialects.postgresql import JSONB
 from werkzeug.security import generate_password_hash, check_password_hash
-
+from datetime import date
 
 app = Flask(__name__)
 
@@ -33,12 +33,18 @@ db = SQLAlchemy(app)
 class Monitor(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True )
-    user = db.Column(db.String(120), unique=True, nullable=False)
-    info = db.Column(JSONB)
+    #user = db.Column(db.String(120), unique=True, nullable=False)
+    user = db.Column(db.String(120), nullable=False)
+    cluster = db.Column(db.String(120), nullable=False)
+    group = db.Column(db.String(120), nullable=False)
+    date = db.Column(db.Date, nullable=False)
+    #info = db.Column(JSONB)
 
-    def __init__(self, user, info):
+    def __init__(self, user, cluster, group, date):
         self.user = user
-        self.info = info
+        self.cluster = cluster
+        self.group = group
+        self.date = date
 
     def __repr__(self):
         return f"<User {self.user}>"
@@ -103,9 +109,9 @@ def kube():
                if new_generate.generate_csr():
                   new_generate.generate_kubeconfig()
 
-                  infoo = {"clusters":[{"name":"devops-k8s-lab","groups":{"developer":"True"},"dates":{"developer":{"startDate":"21.12.2022"}}}]}
-
-                  user = Monitor(username,infoo)
+                  #infoo = {"clusters":[{"name":"devops-k8s-lab","groups":{"developer":"True"},"dates":{"developer":{"startDate":"21.12.2022"}}}]}
+                  today=date.today().strftime("%d/%m/%Y")
+                  user = Monitor(username,clustername,groupname,today)
                   
                   db.session.add(user)
                   db.session.commit()
@@ -159,7 +165,6 @@ def create_user():
        hashed_pw = generate_password_hash(userpass,"sha256")
 
        # I thought that to write a control flow to check if the user is already exist or not; But since same username or email could not used due to uniqueness of the column, it seems that its not necessary for now.
-
        app.logger.debug('Username is %s ,User Email is %s, Password is %s ', username , useremail , hashed_pw)
 
        systemuser = User(username, useremail, hashed_pw)
@@ -167,6 +172,20 @@ def create_user():
        db.session.commit()
 
      return render_template("createuser.html")
+
+
+@app.route("/user-list")
+@login_required
+def user_list():
+     users = db.session.query(Monitor).all()
+     return render_template("userlist.html", users=users)
+
+@app.route("/platform-user-list")
+@login_required
+def platform_user_list():
+     users = db.session.query(User).all()
+     return render_template("platformuserlist.html", users=users)
+
 
 if __name__ == "__main__":
     app.run(debug=True)
