@@ -1,17 +1,7 @@
-import re, generate, subprocess, os, env, logging
-from tokenize import Ignore
-from select import select
-from typing import Sequence
+import re, generate, env, logging
 from flask import Flask, flash, redirect, url_for, render_template, request, send_from_directory
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
-from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField
-from wtforms.validators import InputRequired, Length, ValidationError
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import create_engine, Column, Integer, String, extract, table, func, text, Sequence
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.dialects.postgresql import JSONB
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import date
 
@@ -37,7 +27,7 @@ class Monitor(db.Model):
     user = db.Column(db.String(120), nullable=False)
     cluster = db.Column(db.String(120), nullable=False)
     group = db.Column(db.String(120), nullable=False)
-    date = db.Column(db.Date, nullable=False)
+    date = db.Column(db.String(120), nullable=False)
     #info = db.Column(JSONB)
 
     def __init__(self, user, cluster, group, date):
@@ -110,7 +100,7 @@ def kube():
                   new_generate.generate_kubeconfig()
 
                   #infoo = {"clusters":[{"name":"devops-k8s-lab","groups":{"developer":"True"},"dates":{"developer":{"startDate":"21.12.2022"}}}]}
-                  today=date.today().strftime("%d/%m/%Y")
+                  today=date.today().strftime("%Y-%m-%d")
                   user = Monitor(username,clustername,groupname,today)
                   
                   db.session.add(user)
