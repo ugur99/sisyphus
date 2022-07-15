@@ -1,5 +1,9 @@
-import subprocess,sys, os, shutil, base64, re
-import env
+import subprocess,sys, os, shutil, base64, re, env
+import kubernetes.client
+from kubernetes import client, config, utils
+from kubernetes.client.rest import ApiException
+from pprint import pprint
+
 
 # GLOBAL VARIABLES
 workspacePath = env.WORKSPACE_DIR
@@ -83,7 +87,50 @@ class KubeConfigGen():
         inventory = workspacePath + "clusters/" + self.clusterName + "/" + self.groupName + "/" + self.userName + "/"
         
         # APPLY CSR ,APPROVE IT AND GET THE RELATED CRT DATA USING RIGHT KUBECONFIG
-        subprocess.call(['export KUBECONFIG=' + kubeConfig + '/config-' + self.clusterName + ' && ' + ' kubectl apply -f ' + tmpFolder + self.userName + '-csr.yaml' + ' && ' + '  kubectl certificate approve ' + self.userName + ' && ' + ' kubectl get csr ' + self.userName + ' -o  jsonpath=\'{.status.certificate}\' |base64 -d > ' + inventory + self.userName + '.crt' ], shell=True)        
+        config.load_kube_config(kubeConfig + '/config-' + self.clusterName)
+        k8s_client = client.ApiClient()
+
+        # Apply CSR
+        try:
+            utils.create_from_yaml(k8s_client, tmpFolder + self.userName + "-csr.yaml", verbose = True)
+        except Exception as ex:
+            print(ex)
+        
+        # Approve CSR
+        api_instance = kubernetes.client.CertificatesV1Api(k8s_client)
+        name = self.userName
+        body = {"status":{"conditions":[{"message":"This CSR was approved by Sisyphus.","reason":"KubectlApprove","status":"True","type":"Approved"}]}}
+        
+        try:
+            api_instance.patch_certificate_signing_request_approval(name, body)
+            #api_response = api_instance.patch_certificate_signing_request_approval(name, body)
+            #pprint(api_response)
+        except ApiException as e:
+            print("Exception when calling CertificatesV1Api->patch_certificate_signing_request_approval: %s\n" % e)
+
+        # Get the related crt data
+        # Currently there is a bug in this code block; I am working on to fix it.
+        '''
+        api_instancee = kubernetes.client.CertificatesV1Api(k8s_client)
+        try:
+            api_responsee = base64.b64decode(api_instancee.read_certificate_signing_request_status(name).to_dict()['status']['certificate'].encode('ascii')).decode('ascii')
+            #base64_message = api_responsee.to_dict()['status']['certificate']
+            #base64_bytes = base64_message.encode('ascii')
+            #message_bytes = base64.b64decode(base64_bytes)
+            #message = message_bytes.decode('ascii')
+            #b = base64.b64decode(api_responsee.to_dict()['status']['certificate']).decode("ascii")
+        except ApiException as e:
+            print("Exception when calling CertificatesV1Api->read_certificate_signing_request_status: %s\n" % e)
+
+        
+        text_file = open(inventory + self.userName + ".crt", "w")
+        text_file.write(api_responsee) 
+        text_file.close()
+        '''
+
+        subprocess.call(['export KUBECONFIG=' + kubeConfig + '/config-' + self.clusterName + ' && ' +' kubectl get csr ' + self.userName + ' -o  jsonpath=\'{.status.certificate}\' |base64 -d > ' + inventory + self.userName + '.crt' ], shell=True)        
+
+
         # COPY KUBECONFIG TEMPLATE FILE
         shutil.copyfile(templateDir + 'kubeconf-template.yaml',userKubeConfig + '/' + self.userName + '-' + self.clusterName + '-kubeconfig')
 

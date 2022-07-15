@@ -14,7 +14,3 @@ You can simply give three variables: user names (can be given multiple names wit
 We can list the users and related cluster/rolegroup informations. 
 
 ![clusteruserlist](image/clusteruserlist.png)
-
-
-## Nginx Sidecar
-We use Nginx Sidecar to decide whether requests are allowed or not by checking the existence of the header given in nginx configuration (*will be depreceated!*).
