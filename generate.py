@@ -1,4 +1,4 @@
-import subprocess,sys, os, shutil, base64, re, env
+import subprocess,sys, os, shutil, base64, re, env, time
 import kubernetes.client
 from kubernetes import client, config, utils
 from kubernetes.client.rest import ApiException
@@ -103,34 +103,23 @@ class KubeConfigGen():
         
         try:
             api_instance.patch_certificate_signing_request_approval(name, body)
-            #api_response = api_instance.patch_certificate_signing_request_approval(name, body)
-            #pprint(api_response)
         except ApiException as e:
             print("Exception when calling CertificatesV1Api->patch_certificate_signing_request_approval: %s\n" % e)
 
-        # Get the related crt data
-        # Currently there is a bug in this code block; I am working on to fix it.
-        '''
-        api_instancee = kubernetes.client.CertificatesV1Api(k8s_client)
+        # Time to wait for certificate to be issued by APISERVER. This value can be revised 
+        time.sleep(5)
+
+        # Get the related crt data        
+        api_instance = kubernetes.client.CertificatesV1Api(k8s_client)
         try:
-            api_responsee = base64.b64decode(api_instancee.read_certificate_signing_request_status(name).to_dict()['status']['certificate'].encode('ascii')).decode('ascii')
-            #base64_message = api_responsee.to_dict()['status']['certificate']
-            #base64_bytes = base64_message.encode('ascii')
-            #message_bytes = base64.b64decode(base64_bytes)
-            #message = message_bytes.decode('ascii')
-            #b = base64.b64decode(api_responsee.to_dict()['status']['certificate']).decode("ascii")
+            api_responsee = base64.b64decode(api_instance.read_certificate_signing_request_status(name).to_dict()['status']['certificate'].encode('ascii')).decode('ascii')
         except ApiException as e:
             print("Exception when calling CertificatesV1Api->read_certificate_signing_request_status: %s\n" % e)
-
         
         text_file = open(inventory + self.userName + ".crt", "w")
         text_file.write(api_responsee) 
         text_file.close()
-        '''
-
-        subprocess.call(['export KUBECONFIG=' + kubeConfig + '/config-' + self.clusterName + ' && ' +' kubectl get csr ' + self.userName + ' -o  jsonpath=\'{.status.certificate}\' |base64 -d > ' + inventory + self.userName + '.crt' ], shell=True)        
-
-
+        
         # COPY KUBECONFIG TEMPLATE FILE
         shutil.copyfile(templateDir + 'kubeconf-template.yaml',userKubeConfig + '/' + self.userName + '-' + self.clusterName + '-kubeconfig')
 
