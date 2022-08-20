@@ -1,7 +1,9 @@
 FROM python:3.8-slim-buster
 WORKDIR /app
 COPY requirements.txt requirements.txt
-RUN apt-get update && apt-get -y install libpq-dev gcc && apt-get install -y python3-psycopg2 && \
+RUN apt-get update && \
+    apt-get --only-upgrade install libgnutls30 && \ 
+    apt-get -y install libpq-dev gcc && apt-get install -y python3-psycopg2  && \
     pip3 install -r requirements.txt &&\
     apt-get install -y apt-transport-https ca-certificates curl && \
     curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg && \
