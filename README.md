@@ -1,6 +1,6 @@
 # Sisyphus
 
-[![Docker Image CI](https://github.com/ugur99/sisyphus/actions/workflows/docker-image-build.yml/badge.svg?branch=main)](https://github.com/ugur99/sisyphus/actions/workflows/docker-image-build.yml) 
+[![Docker Build](https://github.com/ugur99/sisyphus/actions/workflows/docker-image.yml/badge.svg?branch=main)](https://github.com/ugur99/sisyphus/actions/workflows/docker-image.yml) [![Vulnerability Scanning](https://github.com/ugur99/sisyphus/actions/workflows/scan.yml/badge.svg?branch=main)](https://github.com/ugur99/sisyphus/actions/workflows/scan.yml)
 
 ## About
 
