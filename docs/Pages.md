@@ -2,23 +2,23 @@
 
 
 ## Home Page
-![title](../image/home.png)
+![title](../src/image/home.png)
 
 
 ## Documentation Page
-![documentation](../image/documentation.png)
+![documentation](../src/image/documentation.png)
 
 ## Cluster User List Page
-![clusterserlist](../image/clusteruserlist.png)
+![clusterserlist](../src/image/clusteruserlist.png)
 
 ## Platform User List Page
-![platformuserlist](../image/platformuserlist.png)
+![platformuserlist](../src/image/platformuserlist.png)
 
 ## KubecConfig Generator Page
-![kubeconfiggenerator](../image/kubeconfiggenerator.png)
+![kubeconfiggenerator](../src/image/kubeconfiggenerator.png)
 
 ## Create Platform User Page
-![createplatformuser](../image/createplatformuser.png)
+![createplatformuser](../src/image/createplatformuser.png)
 
 ## Login Page
-![login](../image/loginpage.png)
+![login](../src/image/loginpage.png)

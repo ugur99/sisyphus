@@ -9,8 +9,8 @@ Sisyphus is designed as a project to provide a simple solution for managing auth
 ## How it Works?
 You can simply give three variables: user names (can be given multiple names with using commas), group name (should be predefined) and target cluster name.
 
-![kubeconfiggenerator](image/kubeconfiggenerator.png)
+![kubeconfiggenerator](src/image/kubeconfiggenerator.png)
 
 We can list the users and related cluster/rolegroup informations. 
 
-![clusteruserlist](image/clusteruserlist.png)
+![clusteruserlist](src/image/clusteruserlist.png)
