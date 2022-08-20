@@ -1,13 +1,12 @@
-FROM python:3.8.13-alpine3.16
+FROM python:3.8-slim-buster
 WORKDIR /app
 COPY requirements.txt requirements.txt
-RUN apk update && apk add libpq-dev gcc && apk install python3-psycopg2 && \
+RUN apt-get update && apt-get -y install libpq-dev gcc && apt-get install -y python3-psycopg2 && \
     pip3 install -r requirements.txt &&\
-    apk add apt-transport-https ca-certificates curl && \
+    apt-get install -y apt-transport-https ca-certificates curl && \
     curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg && \
     echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" |  tee /etc/apt/sources.list.d/kubernetes.list && \
-    apk update && \
-    apk add kubectl
+    apt-get update && \
+    apt-get install -y kubectl
 COPY . .
 CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0"]
-
